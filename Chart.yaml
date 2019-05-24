@@ -1,0 +1,13 @@
+name: spring-boot
+version: 1.0.4
+home: http://www.mydlq.club
+sources:
+  - https://github.com/a324670547/springboot-chart
+description: Run the simple spring-boot application
+keywords:
+- java
+- tomcat
+- spring-boot
+maintainers:
+- name: mydlq
+  email: mydlq.club@qq.com

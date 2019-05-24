@@ -1,0 +1,118 @@
+{{- if eq .Values.kind "StatefulSet" }}
+apiVersion: apps/v1beta1
+{{ else }}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: {{ .Values.kind | default "Deployment" }}
+metadata:
+  name: "{{ .Release.Name }}"
+  labels:
+    app: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  {{- if eq .Values.kind "StatefulSet" }}
+  serviceName: "{{ .Release.Name }}"
+  {{- end }}
+  updateStrategy:
+    type: "{{ .Values.updateStrategy.type }}"
+  replicas: {{ .Values.replicas }}
+  template:
+    metadata:
+      labels:
+        app: "{{ .Release.Name }}"
+        release: "{{ .Release.Name }}"
+#---------------------- annotations ---------------------------------
+{{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+#---------------------- image ---------------------------------------
+      - name: "{{ .Release.Name }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+#---------------------- env -----------------------------------------
+{{- if .Values.envFrom }}
+        envFrom: 
+{{ toYaml .Values.envFrom | indent 8 }}
+{{- end }}
+        env:
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_NAME
+          valueFrom: 
+            fieldRef: 
+              fieldPath: metadata.name
+{{- if .Values.env }}
+{{ toYaml .Values.env | indent 8 }}
+{{- end }}
+#---------------------- ports ---------------------------------------
+        ports:
+{{- if .Values.ports }}
+{{ toYaml .Values.ports | indent 8 }}
+{{- end }}
+#---------------------- resources -----------------------------------
+{{- if .Values.resources }}
+        resources: 
+{{ toYaml .Values.resources | indent 10 }}
+{{- end }}
+#---------------------- readinessProbe && livenessProbe -------------
+{{- if .Values.probe }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.probe.path }}
+            port: {{ .Values.probe.port }}
+          initialDelaySeconds: {{ .Values.probe.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.probe.livenessProbe.periodSeconds }}
+          successThreshold: {{ .Values.probe.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.probe.livenessProbe.failureThreshold }}
+          timeoutSeconds: {{ .Values.probe.livenessProbe.timeoutSeconds }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.probe.path }}
+            port: {{ .Values.probe.port }}
+          initialDelaySeconds: {{ .Values.probe.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.probe.readinessProbe.periodSeconds }}
+          successThreshold: {{ .Values.probe.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.probe.livenessProbe.failureThreshold }}
+          timeoutSeconds: {{ .Values.probe.readinessProbe.timeoutSeconds }}
+{{- end }}
+#------- volumes && volumeMounts && volumeClaimTemplates-------------
+{{- if .Values.mount }}
+{{- if .Values.mount.volumeMounts }}
+        volumeMounts: 
+{{ toYaml .Values.mount.volumeMounts | indent 8 }}
+{{- end }}
+{{- if .Values.mount.volumes }}
+      volumes: 
+{{ toYaml .Values.mount.volumes | indent 6 }}
+{{- end }}
+{{- if .Values.mount.volumeClaimTemplates }}
+{{- if eq .Values.kind "StatefulSet" }}
+      volumeClaimTemplates: 
+{{ toYaml .Values.mount.volumeClaimTemplates | indent 6 }}
+{{- end }}
+{{- end }}
+{{- end }}
+#---------------------- affinity ------------------------------------
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+#---------------------- tolerations ---------------------------------
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+#---------------------- terminationGracePeriodSeconds ---------------
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+#---------------------- nodeSelector --------------------------------
+{{- if .Values.nodeSelector }}
+      nodeSelector: 
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
