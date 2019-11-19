@@ -1,5 +1,5 @@
-name: spring-boot
-version: 1.0.4
+name:   
+version: 1.0.5
 home: http://www.mydlq.club
 sources:
   - https://github.com/a324670547/springboot-chart

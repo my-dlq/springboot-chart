@@ -64,22 +64,25 @@ ports:
     containerPort: 8081
     protocol: TCP
 
+######---ServiceAccount---#####
+#serviceAccountName: default   
+
 ######---Read && Live 探针设置---######
-probe:
-  port: 8081
-  path: /actuator/health
-  livenessProbe:
-    initialDelaySeconds: 40
-    periodSeconds: 10
-    successThreshold: 1
-    failureThreshold: 10
-    timeoutSeconds: 15
-  readinessProbe:
-    initialDelaySeconds: 30
-    periodSeconds: 10
-    successThreshold: 1
-    failureThreshold: 10
-    timeoutSeconds: 15
+# probe:
+#   port: 8081
+#   path: /actuator/health
+#   livenessProbe:
+#     initialDelaySeconds: 40
+#     periodSeconds: 10
+#     successThreshold: 1
+#     failureThreshold: 10
+#     timeoutSeconds: 15
+#   readinessProbe:
+#     initialDelaySeconds: 30
+#     periodSeconds: 10
+#     successThreshold: 1
+#     failureThreshold: 10
+#     timeoutSeconds: 15
 
 ######---启动节点设置设置---######
 nodeSelector: []
