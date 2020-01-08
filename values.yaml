@@ -160,3 +160,39 @@ service:
       protocol: TCP
       # 如果type为NodePort,则可以设置下面的nodePort端口,否则请不要设置
       # nodePort: 30081
+
+#**********************************************************#
+#                      == Ingress ==                       #
+#**********************************************************#
+
+ingress:
+  ## 是否启动 Ingress
+  enabled: false
+  ## 设置域名
+  hostname: www.mydlq.club
+  ## 路径设置
+  path: /
+  ## 服务名称设置
+  service: test
+  ## 端口设置
+  port: server
+  ## 设置 Ingress Annotations
+  annotations: {}
+  #  kubernetes.io/ingress.class: traefik
+
+  ## 配置多个域名与路径
+  ## hosts:
+  ## - name: cloud.mydlq.club
+  ##   path: /
+  ##   service: test1
+  ##   port: server
+  ## - name: www.mydlq.club
+  ##   path: /
+  ##   service: test2
+  ##   port: server
+
+  ## 配置 TLS
+  ## tls:
+  ## - hosts:
+  ##     - www.mydlq.club
+  ##   secretName: mydlq-tls
