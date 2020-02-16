@@ -18,7 +18,7 @@ updateStrategy:
   type: RollingUpdate
 
 ######---重启策略---(Always、OnFailure、Never)####
-restartPolicy: Never
+restartPolicy: Always
 
 ######---Resources资源限制设置---######
 resources:
