@@ -17,6 +17,9 @@ replicas: 1
 updateStrategy:
   type: RollingUpdate
 
+######---重启策略---(Always、OnFailure、Never)####
+restartPolicy: Never
+
 ######---Resources资源限制设置---######
 resources:
   limits:

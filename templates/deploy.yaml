@@ -29,6 +29,9 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.restartPolicy }}      
+      restartPolicy: {{ .Values.restartPolicy }}
+{{- end }}          
 {{- if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName }}
 {{- end }}      
