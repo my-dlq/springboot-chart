@@ -1,13 +1,16 @@
+apiVersion: v2
 name: spring-boot
-version: 1.1.1
+description: Spring Boot Helm chart for Kubernetes
 home: http://www.mydlq.club
+type: application
 sources:
-  - https://github.com/a324670547/springboot-chart
-description: Run the simple spring-boot application
+  - https://github.com/my-dlq/springboot-chart
+version: 2.0.0
+appVersion: 2.2.0
 keywords:
 - java
-- tomcat
 - spring-boot
+- spring-cloud
 maintainers:
 - name: mydlq
-  email: mydlq.club@qq.com
+  email: mynamedlq@163.com

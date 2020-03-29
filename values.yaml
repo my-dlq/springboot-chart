@@ -1,56 +1,72 @@
 #**********************************************************#
-#                      == Deployment ==                    #
+#          ====== springboot template ======               #
 #**********************************************************#
-######---类型设置 (可选为Deployment、StatefulSet，默认为：Deployment)---######
-kind: Deployment
 
-######---镜像设置---######
+#**********************************************************#
+#                      == Service ==                       #
+#**********************************************************#
+## Service Type设置 (可以设置为ClusterIP、NodePort、None) ##
+service:
+  type: ClusterIP
+  ports: 
+    - name: server
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+    - name: management
+      port: 8081
+      targetPort: 8081
+      protocol: TCP
+
+## ========== service CluserIP配置示例 ========== #####
+# service:
+#   type: ClusterIP
+#   ports: 
+#     - name: server
+#       port: 8080
+#       targetPort: 8080
+#       protocol: TCP
+## ========== service NodePort配置示例 ========== #####      
+# service:
+#   type: ClusterIP
+#   ports: 
+#     - name: server
+#       port: 8080
+#       targetPort: 8080
+#       nodePort: 30080
+#       protocol: TCP
+
+#**********************************************************#
+#                      == Image ==                         #
+#**********************************************************#
+
 image:
-  repository: "mydlqclub/springboot-helloworld"
-  tag: "0.0.1"
-  pullPolicy: "IfNotPresent"
+  repository: mydlqclub/springboot-helloworld
+  tag: 0.0.1
+  pullPolicy: IfNotPresent
 
-######---副本数设置---######
 replicas: 1
 
-######---更新策略---####
-updateStrategy:
-  type: RollingUpdate
-
-######---重启策略---(Always、OnFailure、Never)####
+imagePullSecrets: []
 restartPolicy: Always
 
-######---Resources资源限制设置---######
-resources:
-  limits:
-    memory: 512Mi
-    cpu: 1000m
-  requests:
-    memory: 256Mi
-    cpu: 500m
+#**********************************************************#
+#                       == Env ==                         #
+#**********************************************************#
 
-######---Pod podAnnotations设置---######
-podAnnotations:
-#  prometheus.io/scrape: "true"
-#  prometheus.io/port: "9030"
-#  prometheus.io/path: "/"
+env: []
 
-######---terminationGracePeriodSeconds优雅关闭Pod设置(默认30s)---######
-terminationGracePeriodSeconds: 10
+## ========== env配置示例 ========== #####
+# env: 
+#   - name: "JAVA_OPTS"
+#     value: "-Dserver.port=8080"
+#   - name: "APP_OPTS"
+#     value: "" 
 
-######---环境变量ENV设置---######
-env: 
-  - name: "JAVA_OPTS"
-    value: "-Dserver.port=8080"
-  - name: "APP_OPTS"
-    value: "" 
+#**********************************************************#
+#                       == Port ==                         #
+#**********************************************************#
 
-######---环境变量EnvFrom设置---######
-envFrom:
-  #- configMapRef:
-  #    name: env-config
-
-######---Port端口设置---######
 ports: 
   - name: server
     containerPort: 8080
@@ -59,130 +75,160 @@ ports:
     containerPort: 8081
     protocol: TCP
 
-######---ServiceAccount---#####
-#serviceAccountName: default   
+#**********************************************************#
+#                      == Probe ==                         #
+#**********************************************************#
 
-######---Read && Live 探针设置---######
-# probe:
-#   port: 8081
-#   path: /actuator/health
-#   livenessProbe:
-#     initialDelaySeconds: 40
-#     periodSeconds: 10
-#     successThreshold: 1
-#     failureThreshold: 10
-#     timeoutSeconds: 15
-#   readinessProbe:
-#     initialDelaySeconds: 30
-#     periodSeconds: 10
-#     successThreshold: 1
-#     failureThreshold: 10
-#     timeoutSeconds: 15
-   
-######---启动节点设置设置---######
-nodeSelector: 
-  # selectNode: master
+livenessProbe: []
+readinessProbe: []
 
-######---Volume && VolumeMounts设置---######
+## ========== livenessProbe配置示例 ========== #####
+# livenessProbe: 
+#   httpGet:
+#     path: /
+#     port: http
+## ========== readinessProbe配置示例 ========== #####
+# readinessProbe:
+#   httpGet:
+#     path: /
+#     port: http
+
+#**********************************************************#
+#                 == serviceAccount ==                     #
+#**********************************************************#
+
+serviceAccountName: {}
+
+## ========== serviceAccount配置示例 ========== #####
+# serviceAccountName: admin
+
+#**********************************************************#
+#                  == podSecurity ==                       #
+#**********************************************************#
+
+podSecurityContext: {}
+securityContext: {}
+
+## ========== podSecurityContext配置示例 ========== #####
+# podSecurityContext: 
+  # fsGroup: 2000
+## ========== securityContext配置示例 ========== #####
+# securityContext: 
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+#**********************************************************#
+#                    == Resources ==                       #
+#**********************************************************#
+
+resources: 
+  limits:
+    cpu: 2000m
+    memory: 384Mi
+  requests:
+    cpu: 500m
+    memory: 128Mi
+
+## ========== resources配置示例 ========== #####
+# resources: 
+#   limits:
+#     cpu: 2000m
+#     memory: 384Mi
+#   requests:
+#     cpu: 500m
+#     memory: 128Mi
+
+#**********************************************************#
+#                   == NodeSelector ==                     #
+#**********************************************************#
+
+nodeSelector: {}
+
+## ========== tNodeSelector配置示例 ========== #####
+# nodeSelector: 
+#   kubernetes.io/hostname: k8s-node-2-13
+
+#**********************************************************#
+#                    == Tolerations ==                     #
+#**********************************************************#
+
+tolerations: []
+
+## ========== tolerations配置示例 ========== #####
+# tolerations: 
+#   - operator: Exists
+
+#**********************************************************#
+#                      == Affinity ==                      #
+#**********************************************************#
+
+affinity: {}
+
+## ========== node affinity配置示例 ========== #####
+# affinity: 
+#   nodeAffinity: 
+#     requiredDuringSchedulingIgnoredDuringExecution:  
+#       nodeSelectorTerms:
+#         - matchExpressions:
+#             - key: kubernetes.io/hostname
+#               operator: In
+#               values:
+#                 - k8s-node-2-12
+#     preferredDuringSchedulingIgnoredDuringExecution: 
+#       - weight: 1   #取值范围1-100
+#         preference:
+#           matchExpressions:
+#             - key: kube
+#               operator: In
+#               values:
+#                 - test
+
+#**********************************************************#
+#                      == mount ==                      #
+#**********************************************************#
+
 mount:
-  #######---volumeMounts---######  
-  # volumeMounts: 
-  #   - name: spring-app-config
-  #     mountPath: /opt/deployments/config
-  #     readOnly: true
-  #######---volumes---######     
-  # volumes: 
-  #   - name: spring-app-config
-  #     configMap:
-  #       name: config
-  #       items:
-  #       - key: application.yml
-  #         path: application.yml
-  #   - name: datadir
-  #     persistentVolumeClaim:
-  #       claimName: datadir-pvc
-  #######---volumeClaimTemplates---###### 
-  # volumeClaimTemplates: #(部署类型必须是：StatefulSet)
-  #   - metadata:
-  #       name: www
-  #     spec:
-  #       accessModes: ["ReadWriteOnce"]
-  #       volumeMode: Filesystem
-  #       resources:
-  #         requests:
-  #           storage: 50Mi
-  #       storageClassName: local-storage
+  volumeMounts: []
+  volumes: []
 
-######---Affinity设置---######
-affinity: 
-  # nodeAffinity: 
-  #   #节点亲和性
-  #   requiredDuringSchedulingIgnoredDuringExecution:  #硬策略
-  #     nodeSelectorTerms:
-  #     - matchExpressions:
-  #       - key: kubernetes.io/hostname
-  #         operator: NotIn
-  #         values:
-  #         - k8s-node-2-12
-  #   preferredDuringSchedulingIgnoredDuringExecution: #软策略
-  #   - weight: 1   #取值范围1-100
-  #     preference:
-  #       matchExpressions:
-  #       - key: kube
-  #         operator: In
-  #         values:
-  #         - test
-
-######---Tolerations容忍设置---######
-tolerations: 
-  # - operator: "Exists"
-
-#**********************************************************#
-#                      == Service ==                       #
-#**********************************************************#
-
-service:
-  ######---Service type设置 (可以设置为ClusterIP、NodePort、None)---######
-  type: ClusterIP
-   ######---Service Labels设置---######
-  labels: 
-    # svcEndpoints: actuator
-  ######---Service Annotations设置---######
-  annotations: {}
-  ######---Service Ports设置---######
-  ports: 
-    - name: server
-      port: 8080
-      targetPort: 8080
-      protocol: TCP
-      # 如果type为NodePort,则可以设置下面的nodePort端口,否则请不要设置
-      # nodePort: 30080 
-    - name: management
-      port: 8081
-      targetPort: 8081
-      protocol: TCP
-      # 如果type为NodePort,则可以设置下面的nodePort端口,否则请不要设置
-      # nodePort: 30081
+## ========== mount配置示例 ========== #####
+# mount:
+#   volumeMounts: 
+#     - name: spring-app-config
+#       mountPath: /opt/deployments/config
+#       readOnly: true  
+#     - name: data-dir
+#       mountPath: /data
+#   volumes: 
+#     - name: spring-app-config
+#       configMap:
+#         name: config
+#         items:
+#         - key: application.yml
+#           path: application.yml
+#     - name: data-dir
+#       persistentVolumeClaim:
+#         claimName: datadir-pvc
 
 #**********************************************************#
 #                      == Ingress ==                       #
 #**********************************************************#
 
 ingress:
-  ## 是否启动 Ingress
   enabled: false
-  ## 设置域名
-  hostname: www.mydlq.club
-  ## 路径设置
-  path: /
-  ## 服务名称设置
-  service: test
-  ## 端口设置
-  port: server
-  ## 设置 Ingress Annotations
-  annotations: {}
-  #  kubernetes.io/ingress.class: traefik
-
+  # hostname: app.mydlq.club
+  # path: /
+  # service: test
+  # port: 80
+  # annotations: {}
+  # tls:
+  #   - secretName: mydlq-tls
+  #     hosts:
+  #       - www.mydlq.club
   ## 配置多个域名与路径
   ## hosts:
   ## - name: cloud.mydlq.club
@@ -193,9 +239,29 @@ ingress:
   ##   path: /
   ##   service: test2
   ##   port: server
-
-  ## 配置 TLS
-  ## tls:
-  ## - hosts:
-  ##     - www.mydlq.club
-  ##   secretName: mydlq-tls
+  
+## ========== http协议Ingress配置示例 ========== #####
+# ingress:
+#   enabled: true
+#   hostname: www.mydlq.club
+#   path: /
+#   service: traefik-dashboard
+#   port: 8080
+#   annotations: 
+#     kubernetes.io/ingress.class: traefik   
+#     traefik.ingress.kubernetes.io/router.entrypoints: web
+## ========== https协议Ingress配置示例 ==========  #####
+# ingress:
+#   enabled: true
+#   hostname: cloud.mydlq.club
+#   path: /
+#   service: kubernetes-dashboard
+#   port: 443
+#   annotations: 
+#     kubernetes.io/ingress.class: traefik   
+#     traefik.ingress.kubernetes.io/router.tls: "true"
+#     traefik.ingress.kubernetes.io/router.entrypoints: websecure
+#   tls:
+#     - secretName: mydlq-tls 
+#       hosts:
+#         - cloud.mydlq.club
