@@ -13,6 +13,10 @@ spec:
     metadata:
       labels:
         {{- include "spring-boot.selectorLabels" . | nindent 8 }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
+      {{- end }}
     spec:
       {{- if .Values.restartPolicy }}      
       restartPolicy: {{ .Values.restartPolicy }}
