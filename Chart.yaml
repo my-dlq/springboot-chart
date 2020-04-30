@@ -5,7 +5,7 @@ home: http://www.mydlq.club
 type: application
 sources:
   - https://github.com/my-dlq/springboot-chart
-version: 2.0.1
+version: 2.0.2
 appVersion: 2.2.0
 keywords:
 - java
