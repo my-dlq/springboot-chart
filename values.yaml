@@ -21,6 +21,8 @@ service:
 ## ========== service CluserIP配置示例 ========== #####
 # service:
 #   type: ClusterIP
+#   labels:
+#     svcEndpoints: actuator
 #   ports: 
 #     - name: server
 #       port: 8080
@@ -29,6 +31,8 @@ service:
 ## ========== service NodePort配置示例 ========== #####      
 # service:
 #   type: ClusterIP
+#   labels:
+#     svcEndpoints: actuator
 #   ports: 
 #     - name: server
 #       port: 8080
